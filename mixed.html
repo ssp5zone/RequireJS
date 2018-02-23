@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, shrink-to-fit=no, initial-scale=1">
+        <meta name="description" content="">
+        <meta name="author" content="">
+        <title>RequireJS</title>
+    </head>
+
+    <body>
+        <div id="wrapper">
+            <!-- Sidebar -->
+            <div id="sidebar-wrapper"></div>
+            <!-- /#sidebar-wrapper -->
+            <!-- Page Content -->
+            <div id="page-content-wrapper">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <h1>Simple + Free Style + Lazy Load</h1>
+                            <p>This page contains the files that have mixed AMD definition types which are loaded on demand</p>
+                            <div class="module-container"></div>
+                            <h3>Configuration:</h3>
+                            <pre><code class="language-javascript">
+                                requirejs.config({
+                                    paths: {
+                                        "Block": 'mixed/block',
+                                        "jquery": "../../node_modules/jquery/dist/jquery",
+                                        "bootstrap": "../../node_modules/bootstrap/dist/js/bootstrap",
+                                        "prism": "../../node_modules/prismjs/prism",
+                                        "prism-remove-whitespace": "../../node_modules/prismjs/plugins/normalize-whitespace/prism-normalize-whitespace"
+                                    },
+                                    
+                                    // map is equivalent to resolve.alias and resolveLoader.alias of Webpack
+                                    // if can map original and alias names for specific/all modules/packages/files.
+                                    map: {
+                                        // '*' imiplies all modules/packages
+                                        // Hence these can be placed in paths as well
+                                        // This was is just for showcasing
+                                        '*': {
+                                            "text": "/node_modules/text/text.js", // npm install requirejs/text --save,
+                                            "css": "/node_modules/require-css/css.js", // npm install require-css --save,
+                                        }
+                                    },
+                                });
+
+                                require([
+                                    // 'bootstrap', // Just for testing. Any module can call it before using
+                                    "prism",
+                                    "prism-remove-whitespace",
+                                    "css!/node_modules/prismjs/themes/prism-coy",
+                                    "css!../stylesheets/simple-sidebar",    // better load CSS in traditional way to avoid FOUC (Flash of Unstyled Content)
+                                    "css!/node_modules/bootstrap/dist/css/bootstrap.min",   
+                                    'mixed/child',
+                                    'mixed/sidebar/initSidebar',
+                                ], function() {
+                                    // Known bug for prism: https://github.com/PrismJS/prism/issues/903
+                                    Prism.highlightAll();
+                                });
+                            </code></pre>
+                            <a href="#menu-toggle" class="btn btn-default" id="menu-toggle">Toggle Menu</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- /#page-content-wrapper -->
+        </div>
+        <!-- /#wrapper -->
+        <script src="node_modules/requirejs/require.js" data-main="public/app/app-mixed"></script>
+    </body>
+
+</html>

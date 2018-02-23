@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, shrink-to-fit=no, initial-scale=1">
+        <meta name="description" content="">
+        <meta name="author" content="">
+        <title>RequireJS</title>
+    </head>
+
+    <body>
+        <div id="wrapper">
+            <!-- Sidebar -->
+            <div id="sidebar-wrapper"></div>
+            <!-- /#sidebar-wrapper -->
+            <!-- Page Content -->
+            <div id="page-content-wrapper">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <h1>Simple (Modded) + Free Style + Bundled</h1>
+                            <p>In this page, we bundled, optimized and uglified all the files in one build using <b>r.js</b>.</p>
+                            <p>The following command was run to build the file,</p>
+                            <pre><code class="language-bash">
+                                node node_modules/requirejs/bin/r.js -o public/app/build.config.js
+                            </code></pre>
+                            <div class="module-container"></div>
+                            <div class="alert alert-warning" role="alert">
+                                 <strong>Warning!</strong> 
+                                 Absolute paths create problems during Rjs build. <del>Avoid them</del> Don't use them. 
+                            </div>
+                            <div class="alert alert-info" role="alert">
+                                 <strong><a href="modded-mix.html">Click here</a></strong> 
+                                 to see what changes were made to stabilize the build. 
+                            </div>
+                            <h3>Build Configuration:</h3>
+                            <pre><code class="language-javascript">
+                                ({
+                                    // use configurations present here
+                                    mainConfigFile: "app-mixed-modded.js", 
+
+                                    // input file
+                                    name: "app-mixed-modded",
+
+                                    // output file name
+                                    // putting it elsewhere creates copies of all file (including node_modules) inside it
+                                    // Hence, let it be here.
+                                    out: "mix.built.js",
+
+                                    // We do not require loaders. Replace them with a stub (dummy) function.
+                                    // This reduces final build file size as well as ensures no lazy call happens.
+                                    // Since we used packages, Hence the format became pack-name/file-name.
+                                    // How did I know this name, I checked in the built file.
+                                    stubModules : ['css/css.min', 'text/text'],
+                                    
+                                    // disable uglify for checking
+                                    optimize: 'none',
+                                })
+                            </code></pre>
+                            <a href="#menu-toggle" class="btn btn-default" id="menu-toggle">Toggle Menu</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- /#page-content-wrapper -->
+        </div>
+        <!-- /#wrapper -->
+        <script src="node_modules/requirejs/require.js" data-main="public/app/mix.built"></script>
+    </body>
+
+</html>

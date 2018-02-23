@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, shrink-to-fit=no, initial-scale=1">
+        <meta name="description" content="">
+        <meta name="author" content="">
+        <title>RequireJS</title>
+    </head>
+
+    <body>
+        <div id="wrapper">
+            <!-- Sidebar -->
+            <div id="sidebar-wrapper"></div>
+            <!-- /#sidebar-wrapper -->
+            <!-- Page Content -->
+            <div id="page-content-wrapper">
+                <div class="container-fluid">            
+                    <h1>Standard + Packages + Lazy Load</h1>
+                    <p>This page contains the files that have modules in Traditional RequireJS style. Also we have divided code and config into Packages and loaded them.</p>
+                    <div class="module-container"></div>
+                    <h3>Syntax:</h3>
+                    <div class="row">
+                        <div class="col-sm-6 col-xs-12">
+                            <p>The AMD specified global syntax</p>
+                            <pre><code class="language-javascript">
+                                define(id?, ["dep1", "dep2", "dep3"...]?, function(d1, d2, d3...) {
+                                    // now you could either
+                                    return something;
+                                    // or use
+                                    module.exports = something;
+                                    // or use
+                                    exports.something = something;
+                                });
+                            </code></pre>
+                        </div>
+                        <div class="col-sm-6 col-xs-12">
+                            <p>The standard requirejs community code.</p>
+                            <pre><code class="language-javascript">
+                                define(function(require) {
+                                    var something = require("path/to/something-else");
+                                    return something;                                            
+                                });
+                            </code></pre>
+                            <p>This is just one of variations the of AMD syntax, 
+                                where (<i>require</i>, <i>module</i>, <i>exports</i>)
+                                are passed by default if no dependencies are specified.
+                            </p>
+                        </div>
+                    </div>
+                    <h3>Configurations:</h3>
+                    <h4 style="margin-top: 30px;">1. Global</h4>
+                    <pre><code class="language-javascript">
+                        // Only the global configs are given here. The rest are distributed as on need.
+                        requirejs.config({
+                            paths: {
+                                "jquery": "/node_modules/jquery/dist/jquery",
+                                "bootstrap": "/node_modules/bootstrap/dist/js/bootstrap",
+                                "prism": "/node_modules/prismjs/prism",
+                                "prism-remove-whitespace": "/node_modules/prismjs/plugins/normalize-whitespace/prism-normalize-whitespace"
+                            },
+                            
+                            shim: {
+                                "bootstrap": {
+                                    deps: ["jquery"],
+                                    exports: "$",
+                                },
+                            },
+
+                            map: {
+                                '*': {
+                                    "text": "/node_modules/text/text.js",
+                                    "css": "/node_modules/require-css/css.js",
+                                    "template": "/public/template", // alias path name
+                                    "stylesheets": "/public/stylesheets", // alias path name
+                                }
+                            },
+
+                            // it will look for -> baseUrl/package-name/main.js
+                            packages: ["blocks", "coder", "sidebar"],
+
+                            // Enabling this a great way to check for correct shims
+                            // enforceDefine: true,
+                        });
+
+                        define(function(require) {
+                            'use strict';
+                            // Global imports
+                            require([
+                                "css!stylesheets/simple-sidebar",
+                                "css!/node_modules/bootstrap/dist/css/bootstrap.min",
+                            ]);
+                            // Load the packages
+                            require(["blocks", "coder", "sidebar"]);
+                        });
+                    </code></pre>
+                    <h4 style="margin-top: 30px;">2. Package - blocks</h4>
+                    <pre><code class="language-javascript">
+                        /**
+                         * Blocks Package for Blocks realted coding
+                         */
+
+                        // require was given outside to ensure that the configs are updated before the deps are required
+                        requirejs.config({
+                            paths: {
+                                "Block": 'blocks/block',        
+                            }
+                        });
+
+                        define(function(require) {
+                            'use strict';
+                            // Bootstrapping child is enough to start
+                            // giving require("child") does not work because the base path is ../ from here
+                            require('./child');    
+                        });
+                    </code></pre>
+                    <h4 style="margin-top: 30px;">3. Package - sidebar</h4>
+                    <pre><code class="language-javascript">
+                        /**
+                         * Sidebar package for sidebar related codings
+                         */
+                        define(function (require) {
+                            "use strict";
+                            require("./initSidebar");
+                        });
+
+                    </code></pre>
+                    <h4 style="margin-top: 30px;">4. Package - prism</h4>
+                    <pre><code class="language-javascript">
+                        /**
+                         * Prism Package for prism realted coding
+                         */
+
+                        // require was given outside to ensure that the configs are updated before the deps are required
+                        requirejs.config({
+                                shim: {
+                                    "prism": {
+                                        deps: [],
+                                        exports: "window",  // IMPORTANT: Without exports the shims are not created as there is no return or export
+                                    },
+                                    "prism-remove-whitespace": {
+                                        deps: ["prism"],
+                                        exports: "window", // IMPORTANT: Remove this and check with enforceDefine: true.
+                                    },
+                                },
+                        });
+
+                        define(function(require) {
+                            'use strict';
+                            require([
+                                "prism-remove-whitespace", // This automatically loads prism as well.
+                                "css!/node_modules/prismjs/themes/prism-coy",
+                            ], function() {
+                                Prism.highlightAll(); // Known bug for prism: https://github.com/PrismJS/prism/issues/903
+                            });    
+                        });
+                    </code></pre>
+                    <a href="#menu-toggle" class="btn btn-default" id="menu-toggle">Toggle Menu</a>
+                </div>
+            </div>
+            <!-- /#page-content-wrapper -->
+        </div>
+        <!-- /#wrapper -->
+        <script src="node_modules/requirejs/require.js" data-main="public/app/traditional/main"></script>
+    </body>
+
+</html>

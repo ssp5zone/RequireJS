@@ -1,0 +1,32 @@
+{
+  "name": "require-js-xperiments",
+  "version": "1.0.0",
+  "description": "Playing with RequireJS",
+  "main": "index.html",
+  "scripts": {
+    "build-mix": "node node_modules/requirejs/bin/r.js -o public/app/build.config.js",
+    "build-package": "node node_modules/requirejs/bin/r.js -o public/app/traditional/build.config.js",
+    "just-start": "lite-server",
+    "build": "npm run build-mix && npm run build-package",
+    "start": "npm install && npm run build && lite-server"
+  },
+  "keywords": [
+    "RequireJS",
+    "Module",
+    "Loaders",
+    "AMD"
+  ],
+  "author": "ssp5zone",
+  "license": "MIT",
+  "devDependencies": {
+    "lite-server": "^2.3.0"
+  },
+  "dependencies": {
+    "bootstrap": "^3.3.7",
+    "jquery": "^3.3.1",
+    "prismjs": "^1.11.0",
+    "require-css": "^0.1.10",
+    "requirejs": "^2.3.5",
+    "text": "github:requirejs/text"
+  }
+}

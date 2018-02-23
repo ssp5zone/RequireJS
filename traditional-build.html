@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, shrink-to-fit=no, initial-scale=1">
+        <meta name="description" content="">
+        <meta name="author" content="">
+        <title>RequireJS</title>
+    </head>
+
+    <body>
+        <div id="wrapper">
+            <!-- Sidebar -->
+            <div id="sidebar-wrapper"></div>
+            <!-- /#sidebar-wrapper -->
+            <!-- Page Content -->
+            <div id="page-content-wrapper">
+                <div class="container-fluid">            
+                    <h1>Standard (Modded) + Packages + Built</h1>
+                    <p>This page uses the final build file created using <a href="traditional-mod.html">updated configurations.</a></p>
+                    <p> As there are no lazy-loads, 
+                        to test, you can stop the server and direcly open this HTML file in any browser.
+                        Since all the neccesary modules and files are bundled up, this page should work file without a server too.
+                    </p>
+                    <p>The build is done using the following command,</p>
+                    <pre><code class="language-bash">
+                        node node_modules/requirejs/bin/r.js -o public/app/traditional/build.config.js
+                    </code></pre>
+                    <div class="module-container"></div>
+                    <div class="alert alert-info" role="alert">
+                        <strong>Note!</strong> 
+                        Devs usually build using <code>appDir: ""</code> and <code>out:""</code> configs. 
+                        However this creates an entire ditribution directory. This is good while creating multiple
+                        <em>modules</em> or <em>bundles</em>.
+                    </div>
+                    <h3>Configurations:</h3>
+                    <pre><code class="language-javascript">
+                        ({    
+                            // Without the base URL, it starts looking for input file 
+                            // in mainConfigFile location  
+                            baseUrl: ".",
+
+                            // use configurations present here
+                            // Notice we have use the configurations of different locations
+                            mainConfigFile: ["main-modded.js", "blocks/main.js", "coder/main.js", "sidebar/main.js"],
+
+                            // input file
+                            name: "main-modded",
+
+                            // output file name
+                            // putting it elsewhere creates copies all file (including node_modules) to it
+                            // Hence, let it be here.
+                            out: "pack.built.js",
+
+                            // We do not require loaders. Replace them with a stub (dummy) function.
+                            // This reduces final build file size as well as ensures no lazy call happens.
+                            // Since we used packages, Hence the format became <pack-name>/<file-name>.
+                            // How did I know this name, I checked in the built file.
+                            stubModules : ['css/css.min', 'text/text'],
+                            
+                            // disable uglify for checking
+                            optimize: 'none',
+                        })
+                    </code></pre>
+                    <a href="#menu-toggle" class="btn btn-default" id="menu-toggle">Toggle Menu</a>
+                </div>
+            </div>
+            <!-- /#page-content-wrapper -->
+        </div>
+        <!-- /#wrapper -->
+        <script src="node_modules/requirejs/require.js" data-main="public/app/traditional/pack.built"></script>
+    </body>
+
+</html>

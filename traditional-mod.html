@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, shrink-to-fit=no, initial-scale=1">
+        <meta name="description" content="">
+        <meta name="author" content="">
+        <title>RequireJS</title>
+    </head>
+
+    <body>
+        <div id="wrapper">
+            <!-- Sidebar -->
+            <div id="sidebar-wrapper"></div>
+            <!-- /#sidebar-wrapper -->
+            <!-- Page Content -->
+            <div id="page-content-wrapper">
+                <div class="container-fluid">            
+                    <h1>Standard (Modded) + Packages + Lazy Load</h1>
+                    <p>We modified the <a href="traditional.html">earlier code</a> slightly to make it buildable by <b>r.js</b>.</p>
+                    <p>This is basically to check if things work fine after modifications.</p>
+                    <div class="module-container"></div>
+                    <h3>Changes:</h3>
+                    <h4 style="margin-top: 30px;">1. Removed the define wrapper</h4>
+                    <pre><code class="language-javascript">
+                        /**
+                         * If the file contains a requirejs local config
+                         * the whole file is shimmed with an outer define.
+                         * Hence the inner defined will not be executed
+                         */
+                        // define(function(require) {
+                        //    'use strict';
+                                require([
+                                    "prism-remove-whitespace", // This automatically loads prism as well.
+                                    "css!node_modules/prismjs/themes/prism-coy",
+                                ], function() {
+                                    Prism.highlightAll(); // Known bug for prism: https://github.com/PrismJS/prism/issues/903
+                                });      
+                        // });
+                    </code></pre>
+                    <h4 style="margin-top: 30px;">2. Retained define wrapper</h4>
+                    <pre><code class="language-javascript">
+                        // This package does not have a local requirejs.config
+                        // Hence, it will not be shimmed. Define is required here or 
+                        // else the dependencies are not loaded in r.js build
+                        define(function (require) {
+                            "use strict";
+                            require("./initSidebar");
+                        });
+                    </code></pre>
+                    <h4 style="margin-top: 30px;">3. Updated RequireJS Config</h4>
+                    <pre><code class="language-javascript">
+                        // Only the global configs are given here. The rest are distributed as on need.
+                        requirejs.config({
+                            // paths are loaction independent. Use them to alias global dir/mod instead of map
+                            // Using relative paths as absolute create problems in build
+                            paths: {
+                                "jquery": "../../../node_modules/jquery/dist/jquery",
+                                "bootstrap": "../../../node_modules/bootstrap/dist/js/bootstrap",
+                                "prism": "../../../node_modules/prismjs/prism",
+                                "prism-remove-whitespace": "../../../node_modules/prismjs/plugins/normalize-whitespace/prism-normalize-whitespace",
+                                "node_modules": "../../../node_modules",    // added to fix CSS build issue. See **1**
+                            },
+                            
+                            shim: {
+                                "bootstrap": {
+                                    deps: ["jquery"],
+                                    exports: "$",
+                                },
+                            },
+
+                            map: {
+                                '*': {
+                                    "stylesheets": "../../stylesheets", // alias path name. Better give in paths.
+                                },
+                                // SEE: You can give configurations for specific modules too
+                                "sidebar": {
+                                    "template": "../../../template", // alias path name. Better give in paths.
+                                },
+                                // **1** Sounds good. Doesn't work. Some issue with CSS loader plugin.
+                                // R.js generates different ID's in built 
+                                // "coder": {
+                                //     "node_modules": "../../../../node_modules"
+                                // }
+                            },
+
+                            // it will look for -> baseUrl/package-name/main.js
+                            // moved css and text loader plugin to packages to resolve various build issues
+                            packages: ["blocks", "coder", "sidebar", {
+                                name: 'css',
+                                location: '../../../node_modules/require-css/',
+                                main: 'css.min'
+                            }, {
+                                name: 'text',
+                                location: '../../../node_modules/text/',
+                                main: 'text'
+                            }],
+
+                            // Enabling this a great way to check for correct shims
+                            // enforceDefine: true,
+                        });
+
+                        // Global imports
+                        require([
+                            "css!stylesheets/simple-sidebar",
+                            "css!node_modules/bootstrap/dist/css/bootstrap.min",
+                        ]);
+                        // Load the packages
+                        require(["blocks", "coder", "sidebar"]);
+                    </code></pre>
+                    <a href="#menu-toggle" class="btn btn-default" id="menu-toggle">Toggle Menu</a>
+                </div>
+            </div>
+            <!-- /#page-content-wrapper -->
+        </div>
+        <!-- /#wrapper -->
+        <script src="node_modules/requirejs/require.js" data-main="public/app/traditional/main-modded"></script>
+    </body>
+
+</html>
